@@ -9,16 +9,10 @@
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
   />
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""
-  ></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- MarkerCluster (optional but nice if many points) -->
+  <!-- MarkerCluster -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
@@ -31,66 +25,205 @@
 
   <style>
     :root {
-      --bg: #0f1115;         /* dark UI */
-      --panel: #151822;
-      --text: #f3f5f7;
-      --muted: #a7b0c0;
-      --accent: #8be2d4;     /* mint */
-      --chip: #23283a;
+      --bg: #f7f4ef;
+      --panel: #ffffff;
+      --text: #222222;
+      --muted: #6b6b6b;
+      --accent: #ff5a5f; /* TSH coral */
+      --accent-light: #ffd6d8;
+      --chip: #fff1f1;
     }
+
     body {
-      margin: 0; background: var(--bg); color: var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans";
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
     }
-    header { display:flex; align-items:center; gap:.8rem; padding:14px 16px; background: var(--panel); border-bottom:1px solid #22283a; }
-    header h1 { font-size:16px; margin:0; font-weight:600; letter-spacing:.3px; }
-    #app { display:grid; grid-template-columns: 320px 1fr; height: calc(100vh - 58px); }
-    #sidebar { background: var(--panel); border-right:1px solid #22283a; padding:14px; overflow:auto; }
-    #map { width:100%; height:100%; }
-    .stat { display:flex; justify-content:space-between; padding:10px 12px; background: #111622; border:1px solid #1b2032; border-radius:10px; margin:8px 0; }
-    .chip { display:inline-flex; align-items:center; gap:.4rem; background: var(--chip); border:1px solid #2a3046; padding:6px 10px; border-radius:999px; font-size:12px; color: var(--muted); }
-    .controls { display:grid; gap:10px; margin:12px 0 6px; }
-    .controls label { font-size:13px; color: var(--muted); display:flex; align-items:center; gap:.6rem; }
-    .range-wrap { margin-top:6px; }
-    .range-wrap input { width:100%; }
-    .legend { font-size:12px; color: var(--muted); margin-top:8px; }
-    .footer { font-size:12px; color: var(--muted); margin-top:10px; }
-    .popup h3 { margin:.2rem 0 .6rem; font-size:16px; }
-    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
-    .kpi { background:#0f1420; border:1px solid #1b2032; border-radius:8px; padding:8px; text-align:center; }
-    .kpi .label { color:var(--muted); font-size:11px; }
-    .kpi .value { font-size:18px; font-weight:700; }
-    .btn { background: var(--accent); border:none; color:#0b1b18; font-weight:700; padding:10px 12px; border-radius:10px; cursor:pointer; }
-    .btn.secondary { background: #263047; color: var(--text); border:1px solid #2d3754; }
-    @media (max-width: 900px) { #app { grid-template-columns: 1fr; } #sidebar { order: 2; height: auto; } #map { height: 60vh; } }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: white;
+      padding: 16px;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    #app {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      height: calc(100vh - 64px);
+    }
+
+    #sidebar {
+      background: var(--panel);
+      border-right: 2px solid var(--accent-light);
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    .stat {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: var(--chip);
+      border: 1px solid var(--accent-light);
+      border-radius: 10px;
+      margin: 8px 0;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--chip);
+      border: 1px solid var(--accent-light);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .controls {
+      display: grid;
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .controls label {
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .range-wrap {
+      margin-top: 6px;
+    }
+
+    .range-wrap input {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .btn {
+      background: var(--accent);
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .btn:hover {
+      background: #e44f54;
+    }
+
+    .legend {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    .footer {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .popup h3 {
+      margin: 0.2rem 0 0.6rem;
+      font-size: 16px;
+      color: var(--accent);
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .kpi {
+      background: var(--chip);
+      border: 1px solid var(--accent-light);
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .kpi .label {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .kpi .value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    @media (max-width: 900px) {
+      #app {
+        grid-template-columns: 1fr;
+      }
+
+      #sidebar {
+        order: 2;
+        height: auto;
+      }
+
+      #map {
+        height: 60vh;
+      }
+    }
   </style>
 </head>
+
 <body>
-  <header>
-    <h1>TSH Scholars — Europe Map</h1>
-  </header>
+  <header>TSH Scholars Map</header>
 
   <div id="app">
     <aside id="sidebar">
       <div class="stat"><div>Total Cities</div><div id="stat-cities">0</div></div>
       <div class="stat"><div>Total Scholars</div><div id="stat-total">0</div></div>
+
       <div class="controls">
-        <label><input type="checkbox" id="toggle-current" checked /> Show All</label>
         <div class="range-wrap">
           <div class="chip">Cohort year ≤ <span id="year-label">2025</span></div>
           <input id="year-max" type="range" min="2015" max="2025" value="2025" />
         </div>
-        <button class="btn secondary" id="reset-view">Reset View</button>
+        <button class="btn" id="reset-view">Reset View</button>
       </div>
-      <div class="legend">Click a city to zoom and view counts. This version already includes the 111 scholars.</div>
-      <div class="footer">Made for The Social Hub 🤍</div>
+
+      <div class="legend">
+        Click on any city to see how many scholars are currently there ✨
+      </div>
+      <div class="footer">The Social Hub • Changemakers 2025 🤍</div>
     </aside>
+
     <div id="map"></div>
   </div>
 
   <script>
     const map = L.map('map', { zoomControl: true, scrollWheelZoom: true }).setView([51.5, 9], 5);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '&copy; OpenStreetMap contributors',
+    }).addTo(map);
 
     const cluster = L.markerClusterGroup({ showCoverageOnHover: false });
     let markers = [];
@@ -98,31 +231,31 @@
 
     const els = {
       statCities: document.getElementById('stat-cities'),
-      statTotal:  document.getElementById('stat-total'),
+      statTotal: document.getElementById('stat-total'),
       yearMax: document.getElementById('year-max'),
       yearLabel: document.getElementById('year-label'),
-      resetView: document.getElementById('reset-view')
+      resetView: document.getElementById('reset-view'),
     };
 
     const records = [
-      {city:'Rome',country:'Italy',lat:41.9028,lng:12.4964,current_count:8,start_year:2020,end_year:2025},
-      {city:'Florence',country:'Italy',lat:43.7696,lng:11.2558,current_count:10,start_year:2020,end_year:2025},
-      {city:'Bologna',country:'Italy',lat:44.4949,lng:11.3426,current_count:1,start_year:2021,end_year:2025},
-      {city:'Amsterdam City',country:'Netherlands',lat:52.3702,lng:4.8952,current_count:6,start_year:2020,end_year:2025},
-      {city:'Amsterdam West',country:'Netherlands',lat:52.369,lng:4.853,current_count:10,start_year:2019,end_year:2025},
-      {city:'Rotterdam',country:'Netherlands',lat:51.924,lng:4.478,current_count:8,start_year:2019,end_year:2025},
-      {city:'Delft',country:'Netherlands',lat:51.9995,lng:4.3627,current_count:3,start_year:2020,end_year:2025},
-      {city:'Eindhoven',country:'Netherlands',lat:51.4416,lng:5.4697,current_count:2,start_year:2020,end_year:2025},
-      {city:'The Hague',country:'Netherlands',lat:52.0705,lng:4.3007,current_count:6,start_year:2020,end_year:2025},
-      {city:'Maastricht',country:'Netherlands',lat:50.8514,lng:5.691,current_count:5,start_year:2021,end_year:2025},
-      {city:'Toulouse',country:'France',lat:43.6047,lng:1.4442,current_count:1,start_year:2022,end_year:2025},
-      {city:'Barcelona',country:'Spain',lat:41.3851,lng:2.1734,current_count:7,start_year:2021,end_year:2025},
-      {city:'Madrid',country:'Spain',lat:40.4168,lng:-3.7038,current_count:6,start_year:2021,end_year:2025},
-      {city:'San Sebastian',country:'Spain',lat:43.3183,lng:-1.9812,current_count:2,start_year:2022,end_year:2025},
-      {city:'Berlin',country:'Germany',lat:52.52,lng:13.405,current_count:6,start_year:2020,end_year:2025},
-      {city:'Glasgow',country:'United Kingdom',lat:55.8642,lng:-4.2518,current_count:8,start_year:2020,end_year:2025},
-      {city:'Vienna',country:'Austria',lat:48.2082,lng:16.3738,current_count:10,start_year:2020,end_year:2025},
-      {city:'Porto',country:'Portugal',lat:41.1579,lng:-8.6291,current_count:9,start_year:2020,end_year:2025}
+      { city: 'Rome', country: 'Italy', lat: 41.9028, lng: 12.4964, count: 8, start_year: 2020 },
+      { city: 'Florence', country: 'Italy', lat: 43.7696, lng: 11.2558, count: 10, start_year: 2020 },
+      { city: 'Bologna', country: 'Italy', lat: 44.4949, lng: 11.3426, count: 1, start_year: 2021 },
+      { city: 'Amsterdam City', country: 'Netherlands', lat: 52.3702, lng: 4.8952, count: 6, start_year: 2020 },
+      { city: 'Amsterdam West', country: 'Netherlands', lat: 52.369, lng: 4.853, count: 10, start_year: 2019 },
+      { city: 'Rotterdam', country: 'Netherlands', lat: 51.924, lng: 4.478, count: 8, start_year: 2019 },
+      { city: 'Delft', country: 'Netherlands', lat: 51.9995, lng: 4.3627, count: 3, start_year: 2020 },
+      { city: 'Eindhoven', country: 'Netherlands', lat: 51.4416, lng: 5.4697, count: 2, start_year: 2020 },
+      { city: 'The Hague', country: 'Netherlands', lat: 52.0705, lng: 4.3007, count: 6, start_year: 2020 },
+      { city: 'Maastricht', country: 'Netherlands', lat: 50.8514, lng: 5.691, count: 5, start_year: 2021 },
+      { city: 'Toulouse', country: 'France', lat: 43.6047, lng: 1.4442, count: 1, start_year: 2022 },
+      { city: 'Barcelona', country: 'Spain', lat: 41.3851, lng: 2.1734, count: 7, start_year: 2021 },
+      { city: 'Madrid', country: 'Spain', lat: 40.4168, lng: -3.7038, count: 6, start_year: 2021 },
+      { city: 'San Sebastian', country: 'Spain', lat: 43.3183, lng: -1.9812, count: 2, start_year: 2022 },
+      { city: 'Berlin', country: 'Germany', lat: 52.52, lng: 13.405, count: 6, start_year: 2020 },
+      { city: 'Glasgow', country: 'United Kingdom', lat: 55.8642, lng: -4.2518, count: 8, start_year: 2020 },
+      { city: 'Vienna', country: 'Austria', lat: 48.2082, lng: 16.3738, count: 10, start_year: 2020 },
+      { city: 'Porto', country: 'Portugal', lat: 41.1579, lng: -8.6291, count: 9, start_year: 2020 },
     ];
 
     function buildMarkers() {
@@ -130,28 +263,28 @@
       markers = [];
       let total = 0;
 
-      records.forEach(rec => {
+      records.forEach((rec) => {
         if ((rec.start_year || 0) > yearMax) return;
-        total += rec.current_count;
+        total += rec.count;
         const marker = L.circleMarker([rec.lat, rec.lng], {
-          radius: Math.max(6, Math.min(18, 6 + Math.sqrt(rec.current_count))),
-          weight: 1,
-          color: '#2c3754',
-          fillColor: '#8be2d4',
-          fillOpacity: 0.85
+          radius: Math.max(6, Math.min(18, 6 + Math.sqrt(rec.count))),
+          weight: 2,
+          color: '#ff5a5f',
+          fillColor: '#ff7d81',
+          fillOpacity: 0.8,
         });
 
         marker.bindPopup(`
           <div>
             <h3>${rec.city}, ${rec.country}</h3>
             <div class="grid2">
-              <div class="kpi"><div class="label">Students</div><div class="value">${rec.current_count}</div></div>
+              <div class="kpi"><div class="label">Scholars</div><div class="value">${rec.count}</div></div>
               <div class="kpi"><div class="label">Start Year</div><div class="value">${rec.start_year}</div></div>
             </div>
           </div>
-        `, { className: 'popup' });
+        `);
 
-        marker.on('click', () => map.setView([rec.lat, rec.lng], 11, { animate: true }));
+        marker.on('click', () => map.setView([rec.lat, rec.lng], 10, { animate: true }));
         markers.push(marker);
         cluster.addLayer(marker);
       });
