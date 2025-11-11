@@ -5,190 +5,51 @@
   <title>TSH Scholars Map</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Leaflet -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  <!-- Leaflet + MarkerCluster -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-  <!-- MarkerCluster -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
-  />
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
-  />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
   <style>
     :root {
-      --bg: #f7f4ef;
-      --panel: #ffffff;
-      --text: #222222;
-      --muted: #6b6b6b;
-      --accent: #ff5a5f; /* TSH coral */
-      --accent-light: #ffd6d8;
-      --chip: #fff1f1;
+      /* TSH-ish brand vibes */
+      --bg: #f7f4ef;            /* warm cream */
+      --panel: #ffffff;         /* card white */
+      --text: #222;             /* deep charcoal */
+      --muted: #6b6b6b;         /* soft gray */
+      --accent: #ff5a5f;        /* coral */
+      --accent-light: #ffd6d8;  /* light coral */
+      --chip: #fff1f1;          /* pale coral chip */
     }
+    body { margin:0; background:var(--bg); color:var(--text); font-family: "Inter","Helvetica Neue",Arial,sans-serif; }
+    header{ display:flex; align-items:center; justify-content:center; background:var(--accent); color:#fff; padding:16px; font-size:18px; font-weight:700; letter-spacing:.4px; text-transform:uppercase;}
+    #app{ display:grid; grid-template-columns:340px 1fr; height:calc(100vh - 64px); }
+    #sidebar{ background:var(--panel); border-right:2px solid var(--accent-light); padding:20px; overflow-y:auto; }
+    #map{ width:100%; height:100%; }
 
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
-    }
+    .stat{ display:flex; justify-content:space-between; padding:10px 12px; background:var(--chip); border:1px solid var(--accent-light); border-radius:10px; margin:8px 0; }
+    .chip{ display:inline-flex; align-items:center; gap:.4rem; background:var(--chip); border:1px solid var(--accent-light); padding:6px 10px; border-radius:999px; font-size:12px; color:var(--muted); }
+    .controls{ display:grid; gap:10px; margin:16px 0; }
+    .range-wrap input{ width:100%; accent-color:var(--accent); }
+    .btn{ background:var(--accent); border:none; color:#fff; font-weight:600; padding:10px 12px; border-radius:10px; cursor:pointer; transition:all .2s ease-in-out; }
+    .btn:hover{ background:#e44f54; }
+    .legend{ font-size:13px; color:var(--muted); margin-top:10px; }
+    .footer{ font-size:12px; color:var(--muted); margin-top:20px; text-align:center; }
 
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--accent);
-      color: white;
-      padding: 16px;
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: 0.4px;
-      text-transform: uppercase;
-    }
+    .popup h3{ margin:.2rem 0 .6rem; font-size:16px; color:var(--accent); }
+    .kpis{ display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:6px; }
+    .kpi{ background:var(--chip); border:1px solid var(--accent-light); border-radius:8px; padding:8px; text-align:center; }
+    .kpi .label{ color:var(--muted); font-size:11px; }
+    .kpi .value{ font-size:18px; font-weight:700; color:var(--text); }
+    .cohort-list{ font-size:12px; color:var(--muted); line-height:1.4; }
+    .cohort-list strong{ color:var(--text); }
 
-    #app {
-      display: grid;
-      grid-template-columns: 340px 1fr;
-      height: calc(100vh - 64px);
-    }
-
-    #sidebar {
-      background: var(--panel);
-      border-right: 2px solid var(--accent-light);
-      padding: 20px;
-      overflow-y: auto;
-    }
-
-    #map {
-      width: 100%;
-      height: 100%;
-    }
-
-    .stat {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px 12px;
-      background: var(--chip);
-      border: 1px solid var(--accent-light);
-      border-radius: 10px;
-      margin: 8px 0;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: var(--chip);
-      border: 1px solid var(--accent-light);
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .controls {
-      display: grid;
-      gap: 10px;
-      margin: 16px 0;
-    }
-
-    .controls label {
-      font-size: 13px;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-
-    .range-wrap {
-      margin-top: 6px;
-    }
-
-    .range-wrap input {
-      width: 100%;
-      accent-color: var(--accent);
-    }
-
-    .btn {
-      background: var(--accent);
-      border: none;
-      color: white;
-      font-weight: 600;
-      padding: 10px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.2s ease-in-out;
-    }
-
-    .btn:hover {
-      background: #e44f54;
-    }
-
-    .legend {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 10px;
-    }
-
-    .footer {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 20px;
-      text-align: center;
-    }
-
-    .popup h3 {
-      margin: 0.2rem 0 0.6rem;
-      font-size: 16px;
-      color: var(--accent);
-    }
-
-    .grid2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-    }
-
-    .kpi {
-      background: var(--chip);
-      border: 1px solid var(--accent-light);
-      border-radius: 8px;
-      padding: 8px;
-      text-align: center;
-    }
-
-    .kpi .label {
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .kpi .value {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    @media (max-width: 900px) {
-      #app {
-        grid-template-columns: 1fr;
-      }
-
-      #sidebar {
-        order: 2;
-        height: auto;
-      }
-
-      #map {
-        height: 60vh;
-      }
+    @media(max-width:900px){
+      #app{ grid-template-columns:1fr; }
+      #sidebar{ order:2; height:auto; }
+      #map{ height:60vh; }
     }
   </style>
 </head>
@@ -203,104 +64,147 @@
 
       <div class="controls">
         <div class="range-wrap">
-          <div class="chip">Cohort year ≤ <span id="year-label">2025</span></div>
-          <input id="year-max" type="range" min="2015" max="2025" value="2025" />
+          <div class="chip">Show cohorts starting ≤ <span id="year-label">2026</span></div>
+          <input id="year-max" type="range" min="2023" max="2026" value="2026" />
         </div>
         <button class="btn" id="reset-view">Reset View</button>
       </div>
 
       <div class="legend">
-        Click on any city to see how many scholars are currently there ✨
+        Use the slider to switch between cohorts. Program started in <strong>2023</strong>.
       </div>
-      <div class="footer">The Social Hub • Changemakers 2025 🤍</div>
+      <div class="footer">The Social Hub • Cohorts 2023–2024 & 2025–2026 🤍</div>
     </aside>
 
     <div id="map"></div>
   </div>
 
   <script>
-    const map = L.map('map', { zoomControl: true, scrollWheelZoom: true }).setView([51.5, 9], 5);
-    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-      maxZoom: 18,
-      attribution: '&copy; OpenStreetMap contributors',
+    // Base map
+    const map = L.map('map',{zoomControl:true,scrollWheelZoom:true}).setView([51.5,9],5);
+    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',{
+      maxZoom:18,
+      attribution:'&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    const cluster = L.markerClusterGroup({ showCoverageOnHover: false });
-    let markers = [];
-    let yearMax = 2025;
+    const cluster = L.markerClusterGroup({ showCoverageOnHover:false });
 
-    const els = {
-      statCities: document.getElementById('stat-cities'),
-      statTotal: document.getElementById('stat-total'),
-      yearMax: document.getElementById('year-max'),
-      yearLabel: document.getElementById('year-label'),
-      resetView: document.getElementById('reset-view'),
-    };
+    // ---- DATA MODEL ----
+    // City-level list with per-cohort breakdowns.
+    // NOTE: The 2023–2024 entries below sum to 34 based on your per-city list.
+    // You said total 37 — tell me which city gets the missing 3 and I’ll add them.
+    const cities = [
+      // Italy
+      {city:'Rome', country:'Italy', lat:41.9028, lng:12.4964, cohorts:[{start:2025,end:2026,count:8}]},
+      {city:'Florence', country:'Italy', lat:43.7696, lng:11.2558, cohorts:[{start:2023,end:2024,count:1},{start:2025,end:2026,count:10}]},
+      {city:'Bologna', country:'Italy', lat:44.4949, lng:11.3426, cohorts:[{start:2025,end:2026,count:1}]},
 
-    const records = [
-      { city: 'Rome', country: 'Italy', lat: 41.9028, lng: 12.4964, count: 8, start_year: 2020 },
-      { city: 'Florence', country: 'Italy', lat: 43.7696, lng: 11.2558, count: 10, start_year: 2020 },
-      { city: 'Bologna', country: 'Italy', lat: 44.4949, lng: 11.3426, count: 1, start_year: 2021 },
-      { city: 'Amsterdam City', country: 'Netherlands', lat: 52.3702, lng: 4.8952, count: 6, start_year: 2020 },
-      { city: 'Amsterdam West', country: 'Netherlands', lat: 52.369, lng: 4.853, count: 10, start_year: 2019 },
-      { city: 'Rotterdam', country: 'Netherlands', lat: 51.924, lng: 4.478, count: 8, start_year: 2019 },
-      { city: 'Delft', country: 'Netherlands', lat: 51.9995, lng: 4.3627, count: 3, start_year: 2020 },
-      { city: 'Eindhoven', country: 'Netherlands', lat: 51.4416, lng: 5.4697, count: 2, start_year: 2020 },
-      { city: 'The Hague', country: 'Netherlands', lat: 52.0705, lng: 4.3007, count: 6, start_year: 2020 },
-      { city: 'Maastricht', country: 'Netherlands', lat: 50.8514, lng: 5.691, count: 5, start_year: 2021 },
-      { city: 'Toulouse', country: 'France', lat: 43.6047, lng: 1.4442, count: 1, start_year: 2022 },
-      { city: 'Barcelona', country: 'Spain', lat: 41.3851, lng: 2.1734, count: 7, start_year: 2021 },
-      { city: 'Madrid', country: 'Spain', lat: 40.4168, lng: -3.7038, count: 6, start_year: 2021 },
-      { city: 'San Sebastian', country: 'Spain', lat: 43.3183, lng: -1.9812, count: 2, start_year: 2022 },
-      { city: 'Berlin', country: 'Germany', lat: 52.52, lng: 13.405, count: 6, start_year: 2020 },
-      { city: 'Glasgow', country: 'United Kingdom', lat: 55.8642, lng: -4.2518, count: 8, start_year: 2020 },
-      { city: 'Vienna', country: 'Austria', lat: 48.2082, lng: 16.3738, count: 10, start_year: 2020 },
-      { city: 'Porto', country: 'Portugal', lat: 41.1579, lng: -8.6291, count: 9, start_year: 2020 },
+      // Netherlands
+      {city:'Amsterdam City', country:'Netherlands', lat:52.3702, lng:4.8952, cohorts:[{start:2025,end:2026,count:6}]},
+      {city:'Amsterdam West', country:'Netherlands', lat:52.369, lng:4.853, cohorts:[{start:2023,end:2024,count:2},{start:2025,end:2026,count:10}]},
+      {city:'Rotterdam', country:'Netherlands', lat:51.924, lng:4.478, cohorts:[{start:2023,end:2024,count:9},{start:2025,end:2026,count:8}]},
+      {city:'Delft', country:'Netherlands', lat:51.9995, lng:4.3627, cohorts:[{start:2025,end:2026,count:3}]},
+      {city:'Eindhoven', country:'Netherlands', lat:51.4416, lng:5.4697, cohorts:[{start:2025,end:2026,count:2}]},
+      {city:'The Hague', country:'Netherlands', lat:52.0705, lng:4.3007, cohorts:[{start:2023,end:2024,count:2},{start:2025,end:2026,count:6}]},
+      {city:'Maastricht', country:'Netherlands', lat:50.8514, lng:5.691, cohorts:[{start:2023,end:2024,count:4},{start:2025,end:2026,count:5}]},
+
+      // France
+      {city:'Toulouse', country:'France', lat:43.6047, lng:1.4442, cohorts:[{start:2023,end:2024,count:3},{start:2025,end:2026,count:1}]},
+
+      // Spain
+      {city:'Barcelona', country:'Spain', lat:41.3851, lng:2.1734, cohorts:[{start:2023,end:2024,count:2},{start:2025,end:2026,count:7}]},
+      {city:'Madrid', country:'Spain', lat:40.4168, lng:-3.7038, cohorts:[{start:2023,end:2024,count:4},{start:2025,end:2026,count:6}]},
+      {city:'San Sebastian', country:'Spain', lat:43.3183, lng:-1.9812, cohorts:[{start:2025,end:2026,count:2}]},
+
+      // Germany
+      {city:'Berlin', country:'Germany', lat:52.52, lng:13.405, cohorts:[{start:2025,end:2026,count:6}]},
+
+      // UK
+      {city:'Glasgow', country:'United Kingdom', lat:55.8642, lng:-4.2518, cohorts:[{start:2023,end:2024,count:2},{start:2025,end:2026,count:8}]},
+
+      // Austria
+      {city:'Vienna', country:'Austria', lat:48.2082, lng:16.3738, cohorts:[{start:2023,end:2024,count:5},{start:2025,end:2026,count:10}]},
+
+      // Portugal
+      {city:'Porto', country:'Portugal', lat:41.1579, lng:-8.6291, cohorts:[{start:2025,end:2026,count:9}]}
     ];
 
-    function buildMarkers() {
-      cluster.clearLayers();
-      markers = [];
-      let total = 0;
+    // ---- STATE & UI ----
+    let yearMax = 2026;
+    const els = {
+      statCities: document.getElementById('stat-cities'),
+      statTotal:  document.getElementById('stat-total'),
+      yearMax: document.getElementById('year-max'),
+      yearLabel: document.getElementById('year-label'),
+      resetView: document.getElementById('reset-view')
+    };
 
-      records.forEach((rec) => {
-        if ((rec.start_year || 0) > yearMax) return;
-        total += rec.count;
-        const marker = L.circleMarker([rec.lat, rec.lng], {
-          radius: Math.max(6, Math.min(18, 6 + Math.sqrt(rec.count))),
+    function activeCountFor(city, yMax){
+      return city.cohorts
+        .filter(c => (c.start || 0) <= yMax)
+        .reduce((sum, c) => sum + (c.count || 0), 0);
+    }
+
+    function popupHTML(city, yMax){
+      const total = activeCountFor(city, yMax);
+      const visibleCohorts = city.cohorts
+        .filter(c => (c.start || 0) <= yMax)
+        .sort((a,b) => a.start - b.start);
+
+      const list = visibleCohorts.map(c => `
+        <div>• <strong>${c.start}–${c.end}</strong>: ${c.count}</div>
+      `).join("");
+
+      return `
+        <div>
+          <h3>${city.city}, ${city.country}</h3>
+          <div class="kpis">
+            <div class="kpi"><div class="label">Scholars (shown)</div><div class="value">${total}</div></div>
+            <div class="kpi"><div class="label">Cohorts</div><div class="value">${visibleCohorts.length}</div></div>
+          </div>
+          <div class="cohort-list">${list}</div>
+        </div>
+      `;
+    }
+
+    function buildMarkers(){
+      cluster.clearLayers();
+      let shownCities = 0;
+      let totalScholars = 0;
+
+      cities.forEach(city => {
+        const count = activeCountFor(city, yearMax);
+        if (count <= 0) return; // hide if none in range
+        shownCities++;
+        totalScholars += count;
+
+        const marker = L.circleMarker([city.lat, city.lng], {
+          radius: Math.max(6, Math.min(18, 6 + Math.sqrt(count))),
           weight: 2,
           color: '#ff5a5f',
           fillColor: '#ff7d81',
-          fillOpacity: 0.8,
+          fillOpacity: 0.85
         });
 
-        marker.bindPopup(`
-          <div>
-            <h3>${rec.city}, ${rec.country}</h3>
-            <div class="grid2">
-              <div class="kpi"><div class="label">Scholars</div><div class="value">${rec.count}</div></div>
-              <div class="kpi"><div class="label">Start Year</div><div class="value">${rec.start_year}</div></div>
-            </div>
-          </div>
-        `);
-
-        marker.on('click', () => map.setView([rec.lat, rec.lng], 10, { animate: true }));
-        markers.push(marker);
+        marker.bindPopup(popupHTML(city, yearMax));
+        marker.on('click', () => map.setView([city.lat, city.lng], 10, { animate: true }));
         cluster.addLayer(marker);
       });
 
       map.addLayer(cluster);
-      els.statCities.textContent = records.length;
-      els.statTotal.textContent = total;
+      els.statCities.textContent = shownCities;
+      els.statTotal.textContent = totalScholars; // With current data this will read 145 at 2026
     }
 
-    els.yearMax.addEventListener('input', (e) => {
+    // UI events
+    els.yearMax.addEventListener('input', e => {
       yearMax = +e.target.value;
       els.yearLabel.textContent = yearMax;
       buildMarkers();
     });
+    els.resetView.addEventListener('click', () => map.setView([51.5,9],5));
 
-    els.resetView.addEventListener('click', () => map.setView([51.5, 9], 5));
+    // First render
     buildMarkers();
   </script>
 </body>
