@@ -107,8 +107,7 @@
     L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
     const cluster = L.markerClusterGroup({showCoverageOnHover:false});
 
-    // === Data (Totals: 2023–2024 = 34, 2025–2026 = 111, overall = 145) ===
-    // Each cohort supports an optional scholars[] list: {name, study, photo?}
+    // === Data with cohort scholar (Rome 2025–2026) ===
     const cities = [
       // Italy
       {city:'Rome', country:'Italy', lat:41.9028, lng:12.4964, cohorts:[
