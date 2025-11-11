@@ -14,7 +14,6 @@
 
   <style>
     :root {
-      /* TSH-ish brand vibes */
       --bg: #f7f4ef;            /* warm cream */
       --panel: #ffffff;         /* card white */
       --text: #222;             /* deep charcoal */
@@ -23,7 +22,7 @@
       --accent-light: #ffd6d8;  /* light coral */
       --chip: #fff1f1;          /* pale coral chip */
     }
-    body { margin:0; background:var(--bg); color:var(--text); font-family: "Inter","Helvetica Neue",Arial,sans-serif; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family:"Inter","Helvetica Neue",Arial,sans-serif; }
     header{ display:flex; align-items:center; justify-content:center; background:var(--accent); color:#fff; padding:16px; font-size:18px; font-weight:700; letter-spacing:.4px; text-transform:uppercase;}
     #app{ display:grid; grid-template-columns:340px 1fr; height:calc(100vh - 64px); }
     #sidebar{ background:var(--panel); border-right:2px solid var(--accent-light); padding:20px; overflow-y:auto; }
@@ -73,7 +72,7 @@
       <div class="legend">
         Use the slider to switch between cohorts. Program started in <strong>2023</strong>.
       </div>
-      <div class="footer">The Social Hub • Cohorts 2023–2024 & 2025–2026 🤍</div>
+      <div class="footer">The Social Hub • Cohorts 2023–2024 (34) & 2025–2026 (111) → Total 145 🤍</div>
     </aside>
 
     <div id="map"></div>
@@ -89,10 +88,7 @@
 
     const cluster = L.markerClusterGroup({ showCoverageOnHover:false });
 
-    // ---- DATA MODEL ----
-    // City-level list with per-cohort breakdowns.
-    // NOTE: The 2023–2024 entries below sum to 34 based on your per-city list.
-    // You said total 37 — tell me which city gets the missing 3 and I’ll add them.
+    // ---- DATA (Totals: 2023–2024 = 34, 2025–2026 = 111, overall = 145) ----
     const cities = [
       // Italy
       {city:'Rome', country:'Italy', lat:41.9028, lng:12.4964, cohorts:[{start:2025,end:2026,count:8}]},
@@ -174,7 +170,7 @@
 
       cities.forEach(city => {
         const count = activeCountFor(city, yearMax);
-        if (count <= 0) return; // hide if none in range
+        if (count <= 0) return; // hide if none visible
         shownCities++;
         totalScholars += count;
 
@@ -193,10 +189,9 @@
 
       map.addLayer(cluster);
       els.statCities.textContent = shownCities;
-      els.statTotal.textContent = totalScholars; // With current data this will read 145 at 2026
+      els.statTotal.textContent = totalScholars; // 2026 -> 145 with current data
     }
 
-    // UI events
     els.yearMax.addEventListener('input', e => {
       yearMax = +e.target.value;
       els.yearLabel.textContent = yearMax;
@@ -204,7 +199,6 @@
     });
     els.resetView.addEventListener('click', () => map.setView([51.5,9],5));
 
-    // First render
     buildMarkers();
   </script>
 </body>
