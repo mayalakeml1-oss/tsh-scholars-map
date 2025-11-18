@@ -14,13 +14,13 @@
 
   <style>
     :root{
-      --bg:#f7f4ef;          /* warm cream */
-      --panel:#ffffff;       /* white cards */
-      --text:#222222;        /* deep charcoal */
+      --bg:#f7f4ef;          /* warm background */
+      --panel:#ffffff;       /* cards */
+      --text:#222222;        /* main text */
       --muted:#6b6b6b;       /* soft grey */
-      --accent:#ff5a5f;      /* coral/pink */
-      --accent-light:#ffd6d8;/* light coral */
-      --chip:#ffe6ec;        /* soft pill bg */
+      --accent:#ff5a5f;      /* coral-pink */
+      --accent-light:#ffc2d0;/* light pink highlight */
+      --chip:#ffe6ec;        /* chip background */
     }
     body{
       margin:0;
@@ -93,9 +93,11 @@
       padding:10px 12px;
       border-radius:10px;
       cursor:pointer;
-      transition:all .2s ease-in-out;
+      transition:all .2s;
     }
-    .btn:hover{ background:#e44f54; }
+    .btn:hover{
+      background:#e44f54;
+    }
     .legend{
       font-size:13px;
       color:var(--muted);
@@ -161,7 +163,9 @@
       justify-content:center;
       z-index:9999;
     }
-    .modal.open{ display:flex; }
+    .modal.open{
+      display:flex;
+    }
     .modal-content{
       background:var(--panel);
       border:1px solid var(--accent-light);
@@ -211,7 +215,7 @@
       display:flex;
       gap:10px;
       padding:10px;
-      border:1px solid #f0e3e6;
+      border:1px solid #eee;
       border-radius:12px;
       background:#fff;
     }
@@ -220,7 +224,7 @@
       height:64px;
       object-fit:cover;
       border-radius:8px;
-      background:#fbe9ef;
+      background:#f1f1f1;
     }
     .scholar-meta{
       display:flex;
@@ -234,10 +238,6 @@
     .scholar-study{
       font-size:12px;
       color:var(--muted);
-    }
-    .scholar-uni{
-      font-size:12px;
-      color:#444;
     }
     .scholar-tags{
       display:flex;
@@ -255,9 +255,9 @@
     }
 
     @media(max-width:900px){
-      #app{ grid-template-columns:1fr; }
-      #sidebar{ order:2; height:auto; }
-      #map{ height:60vh; }
+      #app{grid-template-columns:1fr;}
+      #sidebar{order:2;height:auto;}
+      #map{height:60vh;}
     }
   </style>
 </head>
@@ -279,17 +279,17 @@
       </div>
 
       <div class="legend">
-        Program started in <strong>2023</strong>. Click a city → open a cohort’s scholar list.
+        Click a city to see the cohort breakdown and open the detailed scholar profiles.
       </div>
       <div class="footer">
-        The Social Hub • Cohorts 2023–2026 🤍
+        The Social Hub • 2023–Present Scholars
       </div>
     </aside>
 
     <div id="map"></div>
   </div>
 
-  <!-- Scholars modal -->
+  <!-- Modal -->
   <div class="modal" id="scholar-modal" aria-hidden="true" role="dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -297,7 +297,7 @@
         <button class="btn" id="close-modal">Close</button>
       </div>
       <div class="modal-controls">
-        <input id="scholar-search" class="input" placeholder="Search name, study, university…" />
+        <input id="scholar-search" class="input" placeholder="Search name, study, cohort…" />
       </div>
       <div class="modal-body">
         <div id="scholars-container" class="scholars-grid"></div>
@@ -306,199 +306,303 @@
   </div>
 
   <script>
-    // === Map ===
-    const map = L.map('map', { zoomControl:true, scrollWheelZoom:true }).setView([51.5, 9], 5);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    // === Map setup (standard OSM, mostly English labels) ===
+    const map = L.map('map',{zoomControl:true,scrollWheelZoom:true}).setView([51.5,9],5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
       maxZoom:18,
       attribution:'&copy; OpenStreetMap contributors'
     }).addTo(map);
-    const cluster = L.markerClusterGroup({ showCoverageOnHover:false });
+    const cluster = L.markerClusterGroup({showCoverageOnHover:false});
 
-    // === Data (145 total for now) ===
-    // You’ll later add 2023–2024 scholars; Dayana + others are in Rome 2025–2026.
-
+    // === Data ===
+    // 2023–2024: counts only (no scholar profiles yet)
+    // 2025–2026: full names/studies; Dayana has photo in images/dayana-milieva.jpg
     const cities = [
-      // Italy
+      // ROME
       {
         city:'Rome', country:'Italy', lat:41.9028, lng:12.4964,
         cohorts:[
-          {
-            start:2025, end:2026, count:8,
-            scholars:[
-              {
-                name:'Dayana Milieva',
-                study:'MA International Affairs',
-                uni:'John Cabot University',
-                photo:'images/dayana-milieva.jpg'
-              },
-              {
-                name:'Xani Beatriz Villaraos Seres',
-                study:'–',
-                uni:'Rome University of Fine Arts (RUFA)',
-                photo:''
-              },
-              {
-                name:'Anna Bilous',
-                study:'MA Visual and Innovation Design',
-                uni:'Rome University of Fine Arts (RUFA)',
-                photo:''
-              },
-              {
-                name:'Alberto Cabo Valcarce',
-                study:'MA Accessories Design',
-                uni:'Accademia Costume & Moda',
-                photo:''
-              },
-              {
-                name:'Luiza Osam-Gyaabin',
-                study:'MA Fabric Innovation Design',
-                uni:'Accademia Costume & Moda',
-                photo:''
-              },
-              {
-                name:'Yazeed Isied',
-                study:'MA Cinema and Film Production',
-                uni:'Roma Tre University',
-                photo:''
-              },
-              {
-                name:'Basma Almaza',
-                study:'MA International Studies',
-                uni:'Roma Tre University',
-                photo:''
-              },
-              {
-                name:'Maria Vitoria De Andrade Da Silva',
-                study:'MA Jewelry Design',
-                uni:'Accademia Italiana (IAAD)',
-                photo:''
-              }
-            ]
-          }
+          { start:2025, end:2026, count:8, scholars:[
+            { name:'Dayana Milieva', study:'MA International Affairs — John Cabot University', photo:'images/dayana-milieva.jpg' },
+            { name:'Xani Beatriz Villaraos Seres', study:'— (Rome University of Fine Arts – RUFA)', photo:'' },
+            { name:'Anna Bilous', study:'MA Visual and Innovation Design — RUFA', photo:'' },
+            { name:'Alberto Cabo Valcarce', study:'MA Accessories Design — Accademia Costume & Moda', photo:'' },
+            { name:'Luiza Osam-Gyaabin', study:'MA Fabric Innovation Design — Accademia Costume & Moda', photo:'' },
+            { name:'Yazeed Isied', study:'MA Cinema and Film Production — Roma Tre University', photo:'' },
+            { name:'Basma Almaza', study:'MA International Studies — Roma Tre University', photo:'' },
+            { name:'Maria Vitoria De Andrade Da Silva', study:'MA Jewelry Design — Accademia Italiana (IAAD)', photo:'' }
+          ]},
+          { start:2023, end:2024, count:0, scholars:[] } // placeholder for future 23–24 Rome data
         ]
       },
+
+      // FLORENCE
       {
         city:'Florence', country:'Italy', lat:43.7696, lng:11.2558,
         cohorts:[
           { start:2023, end:2024, count:1, scholars:[] },
-          { start:2025, end:2026, count:10, scholars:[] }
+          { start:2025, end:2026, count:10, scholars:[
+            { name:'Claudia Terova Carbajal', study:'MSc Luxury Retail & Business Management — Polimoda', photo:'' },
+            { name:'Taylor Te Whiwhi Wallbank', study:'Young Artist Programme — Mascarade Opera', photo:'' },
+            { name:'Vuyisa Xipu', study:'Opera Studio — Mascarade Opera', photo:'' },
+            { name:'Katerina Borelli', study:'PhD Law — European University Institute (EUI)', photo:'' },
+            { name:'Friederike Orschler', study:'MA Transnational Governance — EUI', photo:'' },
+            { name:'Milla Trinchero', study:'MA Transnational Governance — EUI', photo:'' },
+            { name:'Mostafa Hatem Mostafa Zaki Tana', study:'PhD Law — EUI', photo:'' },
+            { name:'Ahmet Hakan Kayhan', study:'MA Transnational Governance — EUI', photo:'' },
+            { name:'Shuyang Wu', study:'MRes Economics — EUI', photo:'' },
+            { name:'Vito Giacobelli', study:'Biennio di Graphic Design — Accademia Italiana', photo:'' }
+          ]}
         ]
       },
+
+      // BOLOGNA
       {
         city:'Bologna', country:'Italy', lat:44.4949, lng:11.3426,
-        cohorts:[ { start:2025, end:2026, count:1, scholars:[] } ]
+        cohorts:[
+          { start:2025, end:2026, count:1, scholars:[
+            { name:'Laura Zorzi', study:'MA Professional Arrangement and Composition — Creative Hub Academy', photo:'' }
+          ]},
+          { start:2023, end:2024, count:0, scholars:[] }
+        ]
       },
 
-      // Netherlands
+      // AMSTERDAM CITY
       {
         city:'Amsterdam City', country:'Netherlands', lat:52.3702, lng:4.8952,
         cohorts:[
-          { start:2025, end:2026, count:6, scholars:[] }
+          { start:2023, end:2024, count:0, scholars:[] },
+          { start:2025, end:2026, count:6, scholars:[
+            { name:'Joe Gimpel', study:'International Business — HvA (Amsterdam University of Applied Sciences)', photo:'' },
+            { name:'Junbing Liao', study:'MSc Metropolitan Analysis, Design & Engineering — AMS Institute / WUR', photo:'' },
+            { name:'Asal Moradi', study:'MSc Metropolitan Analysis, Design & Engineering — AMS Institute / WUR', photo:'' },
+            { name:'Jose Abraham Villanueva Cuellar', study:'MSc Metropolitan Analysis, Design & Engineering — AMS Institute / WUR', photo:'' },
+            { name:'Ruthler Louis', study:'Software Engineering — CODAM', photo:'' },
+            { name:'Frederico Campanello', study:'Double Bass Master — Conservatorium van Amsterdam (AHK)', photo:'' }
+          ]}
         ]
       },
+
+      // AMSTERDAM WEST
       {
         city:'Amsterdam West', country:'Netherlands', lat:52.369, lng:4.853,
         cohorts:[
           { start:2023, end:2024, count:2, scholars:[] },
-          { start:2025, end:2026, count:10, scholars:[] }
+          { start:2025, end:2026, count:10, scholars:[
+            { name:'Eiman Elgaali', study:'MA Public Health and Health Equity — KIT Royal Tropical Institute', photo:'' },
+            { name:'Phan Minh Thai', study:'MA Public Health and Health Equity — KIT Royal Tropical Institute', photo:'' },
+            { name:'Nataliia Sulym', study:'MA Music — Conservatorium van Amsterdam (AHK)', photo:'' },
+            { name:'Kirutharshan Nicholas John Mariyathas', study:'MA Theatre Makers and Curators in the Performing Arts — AHK', photo:'' },
+            { name:'El Mehdi Banacer', study:'MArch Architecture — AHK (Amsterdam University of the Arts)', photo:'' },
+            { name:'Shuang Yu', study:'MA Film — AHK', photo:'' },
+            { name:'Aditya Jain', study:'MA Applied Museum and Heritage Studies — AHK', photo:'' },
+            { name:'Itan Nikelskii', study:'Software Engineering — CODAM', photo:'' },
+            { name:'Antonio Cossari', study:'BA Software Engineering — CODAM', photo:'' },
+            { name:'Julian Zienert', study:'CODAM core programme', photo:'' }
+          ]}
         ]
       },
+
+      // ROTTERDAM
       {
         city:'Rotterdam', country:'Netherlands', lat:51.924, lng:4.478,
         cohorts:[
           { start:2023, end:2024, count:9, scholars:[] },
-          { start:2025, end:2026, count:8, scholars:[] }
+          { start:2025, end:2026, count:8, scholars:[
+            { name:'Georgios Chomatas', study:'MA Applied History — Erasmus University Rotterdam', photo:'' },
+            { name:'Simon Playe', study:'MA — Erasmus University Rotterdam', photo:'' },
+            { name:'Samuele Pollichemi', study:'MSc Strategic Management — Erasmus University Rotterdam', photo:'' },
+            { name:'Giulia di Santo-Portelli', study:'MA Societal Transitions — Erasmus University Rotterdam', photo:'' },
+            { name:'Pavlos Palvou', study:'MSc Finance and Investments — Erasmus University Rotterdam', photo:'' },
+            { name:'Hien Luong Lai', study:'MSc — Erasmus University Rotterdam', photo:'' },
+            { name:'Lauren Zableckis', study:'MSc Genomics in Society — Erasmus University Rotterdam', photo:'' },
+            { name:'Negul Devan Kesadev Rajeswari', study:'MSc Urban Management and Development — IHS', photo:'' }
+          ]}
         ]
       },
+
+      // DELFT
       {
         city:'Delft', country:'Netherlands', lat:51.9995, lng:4.3627,
         cohorts:[
-          { start:2025, end:2026, count:3, scholars:[] }
+          { start:2023, end:2024, count:0, scholars:[] },
+          { start:2025, end:2026, count:3, scholars:[
+            { name:'Milagro Vasquez', study:'MSc Water and Sustainable Development — IHE Delft', photo:'' },
+            { name:'Esraa Omer Mukhtar', study:'MSc Water and Sustainable Development — IHE Delft', photo:'' },
+            { name:'Musulene Sharpolu', study:'MSc Water and Sustainable Development — IHE Delft', photo:'' }
+          ]}
         ]
       },
+
+      // EINDHOVEN
       {
         city:'Eindhoven', country:'Netherlands', lat:51.4416, lng:5.4697,
         cohorts:[
-          { start:2025, end:2026, count:2, scholars:[] }
+          { start:2023, end:2024, count:0, scholars:[] },
+          { start:2025, end:2026, count:2, scholars:[
+            { name:'Jiwon Hyun', study:'MA Societal Design — Design Academy Eindhoven', photo:'' },
+            { name:'Jaeyoung Lee', study:'MA Contextual Design — Design Academy Eindhoven', photo:'' }
+          ]}
         ]
       },
+
+      // THE HAGUE
       {
         city:'The Hague', country:'Netherlands', lat:52.0705, lng:4.3007,
         cohorts:[
           { start:2023, end:2024, count:2, scholars:[] },
-          { start:2025, end:2026, count:6, scholars:[] }
+          { start:2025, end:2026, count:6, scholars:[
+            { name:'Udey Dahir', study:'MSc Crisis and Security Management — Leiden University The Hague', photo:'' },
+            { name:'Pragya Misra', study:'MA Development Studies — ISS (EUR) The Hague', photo:'' },
+            { name:'Gillian Kipkemboi', study:'MA Development Studies — ISS (EUR) The Hague', photo:'' },
+            { name:'Miyu Nohashi', study:'MA Music Performance in Early Music — Royal Conservatoire The Hague', photo:'' },
+            { name:'Leslie Perez-Canto Azaf', study:'NMO National Master in Orchestral Conducting — Royal Conservatoire The Hague', photo:'' },
+            { name:'Zakaria Haij', study:'MSc Environmental Engineering — TU Delft', photo:'' }
+          ]}
         ]
       },
+
+      // MAASTRICHT
       {
         city:'Maastricht', country:'Netherlands', lat:50.8514, lng:5.691,
         cohorts:[
           { start:2023, end:2024, count:4, scholars:[] },
-          { start:2025, end:2026, count:5, scholars:[] }
+          { start:2025, end:2026, count:5, scholars:[
+            { name:'Emma Przygodda', study:'European Studies on Society, Science and Technology — Maastricht University', photo:'' },
+            { name:'Lea Rebekka Wegert', study:'MSc Cultures of Arts, Science and Technology — Maastricht University', photo:'' },
+            { name:'Nikita Chepkeyvch', study:'MSc Economics and Strategy in Emerging Markets — Maastricht University', photo:'' },
+            { name:'Burak Nuri Demirci', study:'MSc Psychology: Work & Organizational Psychology — Maastricht University', photo:'' },
+            { name:'Doljinsuren Tumurbaatar', study:'MSc Public Policy and Human Development — Maastricht University', photo:'' }
+          ]}
         ]
       },
 
-      // France
+      // TOULOUSE
       {
         city:'Toulouse', country:'France', lat:43.6047, lng:1.4442,
         cohorts:[
           { start:2023, end:2024, count:3, scholars:[] },
-          { start:2025, end:2026, count:1, scholars:[] }
+          { start:2025, end:2026, count:1, scholars:[
+            { name:'Mamadou Aliou Diallo', study:'MA Économie Appliquée — Toulouse School of Economics', photo:'' }
+          ]}
         ]
       },
 
-      // Spain
+      // BARCELONA
       {
         city:'Barcelona', country:'Spain', lat:41.3851, lng:2.1734,
         cohorts:[
           { start:2023, end:2024, count:2, scholars:[] },
-          { start:2025, end:2026, count:7, scholars:[] }
+          { start:2025, end:2026, count:7, scholars:[
+            { name:'Aimen Lakroum', study:'BA English and French Studies — UAB', photo:'' },
+            { name:'Muhammad Usman', study:'MA Telecommunication Engineering — UAB', photo:'' },
+            { name:'Malik Abdalaal', study:'MSc Research and Innovation in Computer-Based Science and Engineering — UAB', photo:'' },
+            { name:'Jesuferanmi Bankole', study:'MBA — ESADE', photo:'' },
+            { name:'Aswini Kumar', study:'MSc International Management — ESADE', photo:'' },
+            { name:'Idris Mohammad', study:'MSc International Management — ESADE', photo:'' },
+            { name:'Chelsea Sabine Sangwa', study:'International Master in Sustainable Business and Innovation — EADA', photo:'' }
+          ]}
         ]
       },
+
+      // MADRID
       {
         city:'Madrid', country:'Spain', lat:40.4168, lng:-3.7038,
         cohorts:[
           { start:2023, end:2024, count:4, scholars:[] },
-          { start:2025, end:2026, count:6, scholars:[] }
+          { start:2025, end:2026, count:6, scholars:[
+            { name:'Iasmina Sharapova', study:'MA Management — IE University', photo:'' },
+            { name:'Shayna van Vuren', study:'MSc Sustainability and Business Transformation — IE University', photo:'' },
+            { name:'Juan Pablo Hernández Mejía', study:'MA Cultural Project Management — La Fábrica', photo:'' },
+            { name:'Juan Glassford', study:'MA Photographic Projects — La Fábrica', photo:'' },
+            { name:'Azti Correa Alamimos', study:'MA Cultural Project Management — La Fábrica', photo:'' },
+            { name:'Paula Thomas', study:'MA Photographic Projects — La Fábrica', photo:'' }
+          ]}
         ]
       },
+
+      // SAN SEBASTIAN
       {
         city:'San Sebastian', country:'Spain', lat:43.3183, lng:-1.9812,
         cohorts:[
-          { start:2025, end:2026, count:2, scholars:[] }
+          { start:2023, end:2024, count:0, scholars:[] },
+          { start:2025, end:2026, count:2, scholars:[
+            { name:'Frank David Guerra Blanco', study:'MA Cinematographic and Audiovisual Creation — Zine-Eskola', photo:'' },
+            { name:'Noemi Susel Veláquez Legón', study:'MA Film and Audiovisual Archives — Zine-Eskola', photo:'' }
+          ]}
         ]
       },
 
-      // Germany
+      // BERLIN
       {
         city:'Berlin', country:'Germany', lat:52.52, lng:13.405,
         cohorts:[
-          { start:2025, end:2026, count:6, scholars:[] }
+          { start:2023, end:2024, count:0, scholars:[] },
+          { start:2025, end:2026, count:6, scholars:[
+            { name:'Matej Balint', study:'BSc Data Science and Business Analytics — Forward College', photo:'' },
+            { name:'Azra Zukic', study:'MA International Affairs — Hertie School', photo:'' },
+            { name:'Daniel Sidiqie', study:'MA International Affairs — Hertie School', photo:'' },
+            { name:'Beatriz Patrico Pereira da Cruz', study:'MA Public Administration — Hertie School', photo:'' },
+            { name:'Salma Karen Gomez Lopez', study:'MSc Public Policy — Hertie School', photo:'' },
+            { name:'Vikash Kanna Chandra Prasad Megalai', study:'MSc Sustainable Mobility Management — TU Berlin', photo:'' }
+          ]}
         ]
       },
 
-      // UK
+      // GLASGOW
       {
         city:'Glasgow', country:'United Kingdom', lat:55.8642, lng:-4.2518,
         cohorts:[
           { start:2023, end:2024, count:2, scholars:[] },
-          { start:2025, end:2026, count:8, scholars:[] }
+          { start:2025, end:2026, count:8, scholars:[
+            { name:'Joanna Shulha', study:'MA Illustration — Glasgow School of Art', photo:'' },
+            { name:'Keely McLavin', study:'MLitt Curation — Glasgow School of Art', photo:'' },
+            { name:'Riccardo Atanasio', study:'MA Musical Theatre (Musical Directing) — Royal Conservatoire of Scotland', photo:'' },
+            { name:'Artem Tereshchenko', study:'MA Piano Performance — Royal Conservatoire of Scotland', photo:'' },
+            { name:'Jonathan Allen', study:'BEng (Hons) Aero-Mechanical Engineering — University of Strathclyde', photo:'' },
+            { name:'Dillon Bricknal', study:'MSc Forensic Science — University of Strathclyde', photo:'' },
+            { name:'Mfon-Abasi Michael Inyang', study:'MA TV Fiction Writing — Glasgow Caledonian University', photo:'' },
+            { name:'Caleb Chezhian', study:'MSc Investigative Ophthalmology and Vision Science — Glasgow Caledonian University', photo:'' }
+          ]}
         ]
       },
 
-      // Austria
+      // VIENNA
       {
         city:'Vienna', country:'Austria', lat:48.2082, lng:16.3738,
         cohorts:[
           { start:2023, end:2024, count:5, scholars:[] },
-          { start:2025, end:2026, count:10, scholars:[] }
+          { start:2025, end:2026, count:10, scholars:[
+            { name:'Shreya Parajuli', study:'LLM Human Rights Law — Central European University (CEU)', photo:'' },
+            { name:'Alina Zaripova', study:'MA History — CEU', photo:'' },
+            { name:'Danya Aburoumi', study:'MA Human Rights — CEU', photo:'' },
+            { name:'Syuzanna Poghosyan', study:'MA Economics, Data and Policy — CEU', photo:'' },
+            { name:'Anna Andreasyan', study:'MA Sociology and Social Anthropology — CEU', photo:'' },
+            { name:'Asliya Shodghulomova', study:'MSc Environmental Sciences and Policy — CEU', photo:'' },
+            { name:'Ali Usama', study:'MSc Social Data Science — CEU', photo:'' },
+            { name:'Jiayu Li', study:'MA Music — University of Music and Performing Arts Vienna (MDW)', photo:'' },
+            { name:'Mathapelo Matabane', study:'MA Music — MDW', photo:'' },
+            { name:'Célest Lang', study:'MA of Music Piano — MDW', photo:'' }
+          ]}
         ]
       },
 
-      // Portugal
+      // PORTO
       {
         city:'Porto', country:'Portugal', lat:41.1579, lng:-8.6291,
         cohorts:[
-          { start:2025, end:2026, count:9, scholars:[] }
+          { start:2023, end:2024, count:0, scholars:[] },
+          { start:2025, end:2026, count:9, scholars:[
+            { name:'Lucy Nyoni', study:'International MBA — Porto Business School', photo:'' },
+            { name:'Omid Akabrian', study:'MSc Business Administration (MBA) — Porto Business School', photo:'' },
+            { name:'Cláudio Manuel António', study:'MA Auditing and Taxation — Universidade Católica Portuguesa Porto', photo:'' },
+            { name:'Sila Köse', study:'MA Cinema — Universidade Católica Portuguesa Porto', photo:'' },
+            { name:'Carla Nicole Dominquez Lora', study:'MA Creative Industries Management — Universidade Católica Portuguesa Porto', photo:'' },
+            { name:'Doris Dadzie', study:'MA Management — Universidade Católica Portuguesa Porto', photo:'' },
+            { name:'Chukwunwike Humphrey Enelamah', study:'MA Management — Universidade Católica Portuguesa Porto', photo:'' },
+            { name:'Naman Tariq', study:'MA Law International Studies — Universidade Católica Portuguesa Porto', photo:'' },
+            { name:'Ana Beatriz Martins Pereira', study:'Integrated MSc in Medicine — Universidade do Porto', photo:'' }
+          ]}
         ]
       }
     ];
@@ -536,16 +640,12 @@
           <div class="cohort-row">
             <div>
               <strong>${c.start}–${c.end}</strong>
-              <div class="meta">
-                ${recorded ? `Showing ${recorded} recorded` : `No profiles recorded yet`}
-                • Total: ${c.count}
-              </div>
+              <div class="meta">${recorded ? `Showing ${recorded} recorded` : `No profiles recorded yet`} • Total: ${c.count}</div>
             </div>
             <button class="btn" onclick="window.__openScholars('${city.city.replace(/'/g,'&#39;')}', '${city.country.replace(/'/g,'&#39;')}', ${c.start}, ${c.end})">
               View scholars
             </button>
-          </div>
-        `;
+          </div>`;
       }).join("");
 
       return `
@@ -571,22 +671,21 @@
         shownCities++;
         totalScholars += count;
 
-        const m = L.circleMarker([city.lat, city.lng], {
-          radius: Math.max(6, Math.min(18, 6 + Math.sqrt(count))),
+        const m = L.circleMarker([city.lat,city.lng],{
+          radius: Math.max(6,Math.min(18,6 + Math.sqrt(count))),
           weight:2,
           color:'#ff5a5f',
-          fillColor:'#ffc2d0',     // soft pink fill
-          fillOpacity:0.9
+          fillColor:'#ffc2d0',
+          fillOpacity:.85
         });
-
-        m.bindPopup(popupHTML(city, yearMax));
-        m.on('click', ()=> map.setView([city.lat, city.lng], 10, { animate:true }));
+        m.bindPopup(popupHTML(city,yearMax));
+        m.on('click',()=>map.setView([city.lat,city.lng],10,{animate:true}));
         cluster.addLayer(m);
       });
 
       map.addLayer(cluster);
       els.statCities.textContent = shownCities;
-      els.statTotal.textContent = totalScholars;
+      els.statTotal.textContent = totalScholars; // 145 at 2026 with current data
     }
 
     // slider + reset
@@ -595,21 +694,17 @@
       els.yearLabel.textContent = yearMax;
       buildMarkers();
     });
-    els.resetView.addEventListener('click', ()=> map.setView([51.5,9],5));
+    els.resetView.addEventListener('click', ()=>map.setView([51.5,9],5));
 
     // === Modal logic ===
     function renderScholars(list){
       els.scholarsContainer.innerHTML = list.map(s=>`
         <div class="scholar-card">
-          ${s.photo ? `<img src="${s.photo}" alt="${(s.name||'Scholar')}" loading="lazy" onerror="this.style.display='none'"/>`
-                    : `<img src="" alt="" style="display:none" />`}
+          ${s.photo ? `<img src="${s.photo}" alt="${(s.name||'Scholar')}" loading="lazy" onerror="this.style.display='none'"/>` : `<img src="" alt="" style="display:none"/>`}
           <div class="scholar-meta">
             <div class="scholar-name">${s.name || 'Unnamed'}</div>
-            ${s.study ? `<div class="scholar-study">${s.study}</div>` : ''}
-            ${s.uni   ? `<div class="scholar-uni">${s.uni}</div>` : ''}
-            <div class="scholar-tags">
-              ${s.cohort ? `<span class="tag">${s.cohort}</span>` : ''}
-            </div>
+            <div class="scholar-study">${s.study || ''}</div>
+            <div class="scholar-tags">${s.cohort ? `<span class="tag">${s.cohort}</span>`:''}</div>
           </div>
         </div>
       `).join('');
@@ -618,20 +713,18 @@
     function openScholars(cityName, country, start, end){
       const city = cities.find(c=>c.city===cityName && c.country===country);
       if(!city) return;
-      const cohort = city.cohorts.find(c=>c.start===start && c.end===end) || { scholars:[], count:0 };
-      const base = (cohort.scholars || []).map(s=> ({ ...s, cohort:`${start}–${end}` }));
+      const cohort = city.cohorts.find(c=>c.start===start && c.end===end) || {scholars:[],count:0};
+      const base = (cohort.scholars || []).map(s=>({...s, cohort:`${start}–${end}`}));
 
       els.modalTitle.textContent = `${cityName}, ${country} — ${start}–${end} • Showing ${base.length} of ${cohort.count}`;
       renderScholars(base);
       els.modal.classList.add('open');
       els.modal.setAttribute('aria-hidden','false');
-      els.scholarSearch.value = '';
 
+      els.scholarSearch.value = '';
       els.scholarSearch.oninput = () => {
         const q = (els.scholarSearch.value || '').toLowerCase();
-        const filtered = base.filter(s =>
-          (`${s.name||''} ${s.study||''} ${s.uni||''}`).toLowerCase().includes(q)
-        );
+        const filtered = base.filter(s => (`${s.name||''} ${s.study||''} ${s.cohort||''}`).toLowerCase().includes(q));
         renderScholars(filtered);
       };
     }
@@ -639,6 +732,7 @@
     function closeModal(){
       els.modal.classList.remove('open');
       els.modal.setAttribute('aria-hidden','true');
+      els.scholarSearch.value = '';
     }
 
     window.__openScholars = openScholars;
