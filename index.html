@@ -356,7 +356,7 @@
   </div>
 
   <script>
-    // === Map setup (English tiles) ===
+    // === Map setup (English OSM tiles) ===
     const map = L.map('map', { zoomControl: true, scrollWheelZoom: true }).setView([51.5, 9], 5);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
@@ -366,8 +366,8 @@
     const cluster = L.markerClusterGroup({ showCoverageOnHover: false });
 
     // === Data ===
-    // 2024–2025: counts only (no scholar profiles yet, you’ll add later)
-    // 2025–2026: full scholar lists per city.
+    // 2024–2025: counts only (no scholars yet)
+    // 2025–2026: full scholar lists (your data)
 
     const cities = [
       // --- ITALY ---
@@ -375,7 +375,7 @@
         city:'Rome', country:'Italy', lat:41.9028, lng:12.4964,
         cohorts:[
           { start:2025, end:2026, count:8, scholars:[
-            { name:'Dayana Milieva', study:'MA International Affairs', university:'John Cabot University', photo:'' },
+            { name:'Dayana Milieva', study:'MA International Affairs', university:'John Cabot University', photo:'images/dayana-milieva.jpg' },
             { name:'Xani Beatriz Villaraos Seres', study:'-', university:'Rome University of Fine Arts (RUFA)', photo:'' },
             { name:'Anna Bilous', study:'MA Visual and Innovation Design', university:'Rome University of Fine Arts (RUFA)', photo:'' },
             { name:'Alberto Cabo Valcarce', study:'MA Accessories Design', university:'Accademia Costume & Moda', photo:'' },
