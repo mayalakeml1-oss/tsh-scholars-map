@@ -277,6 +277,12 @@
       color: var(--muted);
     }
 
+    .scholar-idea {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
     .scholar-tags {
       display: flex;
       gap: 6px;
@@ -356,7 +362,7 @@
   </div>
 
   <script>
-    // === Map setup (English OSM tiles) ===
+    // === Map setup ===
     const map = L.map('map', { zoomControl: true, scrollWheelZoom: true }).setView([51.5, 9], 5);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
@@ -366,23 +372,29 @@
     const cluster = L.markerClusterGroup({ showCoverageOnHover: false });
 
     // === Data ===
-    // 2024–2025: counts only (no scholars yet)
-    // 2025–2026: full scholar lists (your data)
-
+    // 2024–2025: counts only (you can add profiles later)
+    // 2025–2026: full scholar lists
     const cities = [
       // --- ITALY ---
       {
         city:'Rome', country:'Italy', lat:41.9028, lng:12.4964,
         cohorts:[
+          // no 2024–2025 yet for Rome
           { start:2025, end:2026, count:8, scholars:[
-            { name:'Dayana Milieva', study:'MA International Affairs', university:'John Cabot University', photo:'images/dayana-milieva.jpg' },
-            { name:'Xani Beatriz Villaraos Seres', study:'-', university:'Rome University of Fine Arts (RUFA)', photo:'' },
-            { name:'Anna Bilous', study:'MA Visual and Innovation Design', university:'Rome University of Fine Arts (RUFA)', photo:'' },
-            { name:'Alberto Cabo Valcarce', study:'MA Accessories Design', university:'Accademia Costume & Moda', photo:'' },
-            { name:'Luiza Osam-Gyaabin', study:'MA Fabric Innovation Design', university:'Accademia Costume & Moda', photo:'' },
-            { name:'Yazeed Isied', study:'MA Cinema and Film Production', university:'Roma Tre University', photo:'' },
-            { name:'Basma Almaza', study:'MA International Studies', university:'Roma Tre University', photo:'' },
-            { name:'Maria Vitoria De Andrade Da Silva', study:'MA Jewelry Design', university:'Accademia Italiana (IAAD)', photo:'' }
+            {
+              name:'Dayana Milieva',
+              study:'MA International Affairs',
+              university:'John Cabot University',
+              changemaker:'Interested in improving government assistance for children with type 1 diabetes and their parents in both bureaucratic and psycho-social aspects.',
+              photo:'' /* later: 'images/dayana-milieva.jpg' */
+            },
+            { name:'Xani Beatriz Villaraos Seres', study:'-', university:'Rome University of Fine Arts (RUFA)', changemaker:'', photo:'' },
+            { name:'Anna Bilous', study:'MA Visual and Innovation Design', university:'Rome University of Fine Arts (RUFA)', changemaker:'', photo:'' },
+            { name:'Alberto Cabo Valcarce', study:'MA Accessories Design', university:'Accademia Costume & Moda', changemaker:'', photo:'' },
+            { name:'Luiza Osam-Gyaabin', study:'MA Fabric Innovation Design', university:'Accademia Costume & Moda', changemaker:'', photo:'' },
+            { name:'Yazeed Isied', study:'MA Cinema and Film Production', university:'Roma Tre University', changemaker:'', photo:'' },
+            { name:'Basma Almaza', study:'MA International Studies', university:'Roma Tre University', changemaker:'', photo:'' },
+            { name:'Maria Vitoria De Andrade Da Silva', study:'MA Jewelry Design', university:'Accademia Italiana (IAAD)', changemaker:'', photo:'' }
           ]}
         ]
       },
@@ -391,16 +403,16 @@
         cohorts:[
           { start:2024, end:2025, count:1, scholars:[] },
           { start:2025, end:2026, count:10, scholars:[
-            { name:'Claudia Terova Carbajal', study:'MSc Luxury Retail & Business Management', university:'Polimoda', photo:'' },
-            { name:'Taylor Te Whiwhi Wallbank', study:'Young Artist Programme', university:'Mascarade Opera', photo:'' },
-            { name:'Vuyisa Xipu', study:'Opera Studio', university:'Mascarade Opera', photo:'' },
-            { name:'Katerina Borelli', study:'PhD Law', university:'European University Institute (EUI)', photo:'' },
-            { name:'Friederike Orschler', study:'MA Transnational Governance', university:'European University Institute (EUI)', photo:'' },
-            { name:'Milla Trinchero', study:'MA Transnational Governance', university:'European University Institute (EUI)', photo:'' },
-            { name:'Mostafa Hatem Mostafa Zaki Tana', study:'PhD Law', university:'European University Institute (EUI)', photo:'' },
-            { name:'Ahmet Hakan Kayhan', study:'MA Transnational Governance', university:'European University Institute (EUI)', photo:'' },
-            { name:'Shuyang Wu', study:'MRes Economics', university:'European University Institute (EUI)', photo:'' },
-            { name:'Vito Giacobelli', study:'Biennio di Graphic Design', university:'Accademia Italiana', photo:'' }
+            { name:'Claudia Terova Carbajal', study:'MSc Luxury Retail & Business Management', university:'Polimoda', changemaker:'', photo:'' },
+            { name:'Taylor Te Whiwhi Wallbank', study:'Young Artist Programme', university:'Mascarade Opera', changemaker:'', photo:'' },
+            { name:'Vuyisa Xipu', study:'Opera Studio', university:'Mascarade Opera', changemaker:'', photo:'' },
+            { name:'Katerina Borelli', study:'PhD Law', university:'European University Institute (EUI)', changemaker:'', photo:'' },
+            { name:'Friederike Orschler', study:'MA Transnational Governance', university:'European University Institute (EUI)', changemaker:'', photo:'' },
+            { name:'Milla Trinchero', study:'MA Transnational Governance', university:'European University Institute (EUI)', changemaker:'', photo:'' },
+            { name:'Mostafa Hatem Mostafa Zaki Tana', study:'PhD Law', university:'European University Institute (EUI)', changemaker:'', photo:'' },
+            { name:'Ahmet Hakan Kayhan', study:'MA Transnational Governance', university:'European University Institute (EUI)', changemaker:'', photo:'' },
+            { name:'Shuyang Wu', study:'MRes Economics', university:'European University Institute (EUI)', changemaker:'', photo:'' },
+            { name:'Vito Giacobelli', study:'Biennio di Graphic Design', university:'Accademia Italiana', changemaker:'', photo:'' }
           ]}
         ]
       },
@@ -408,7 +420,7 @@
         city:'Bologna', country:'Italy', lat:44.4949, lng:11.3426,
         cohorts:[
           { start:2025, end:2026, count:1, scholars:[
-            { name:'Laura Zorzi', study:'MA Professional Arrangement and Composition', university:'Creative Hub Academy', photo:'' }
+            { name:'Laura Zorzi', study:'MA Professional Arrangement and Composition', university:'Creative Hub Academy', changemaker:'', photo:'' }
           ]}
         ]
       },
@@ -418,12 +430,12 @@
         city:'Amsterdam City', country:'Netherlands', lat:52.3702, lng:4.8952,
         cohorts:[
           { start:2025, end:2026, count:6, scholars:[
-            { name:'Joe Gimpel', study:'International Business', university:'HvA – Amsterdam University of Applied Sciences', photo:'' },
-            { name:'Junbing Liao', study:'MSc Metropolitan Analysis, Design & Engineering', university:'AMS Institute / Wageningen University & Research', photo:'' },
-            { name:'Asal Moradi', study:'MSc Metropolitan Analysis, Design & Engineering', university:'AMS Institute / Wageningen University & Research', photo:'' },
-            { name:'Jose Abraham Villanueva Cuellar', study:'MSc Metropolitan Analysis, Design & Engineering', university:'AMS Institute / Wageningen University & Research', photo:'' },
-            { name:'Ruthler Louis', study:'Software Engineering', university:'CODAM', photo:'' },
-            { name:'Frederico Campanello', study:'Double Bass Master', university:'Conservatorium van Amsterdam (AHK)', photo:'' }
+            { name:'Joe Gimpel', study:'International Business', university:'HvA – Amsterdam University of Applied Sciences', changemaker:'', photo:'' },
+            { name:'Junbing Liao', study:'MSc Metropolitan Analysis, Design & Engineering', university:'AMS Institute / Wageningen University & Research', changemaker:'', photo:'' },
+            { name:'Asal Moradi', study:'MSc Metropolitan Analysis, Design & Engineering', university:'AMS Institute / Wageningen University & Research', changemaker:'', photo:'' },
+            { name:'Jose Abraham Villanueva Cuellar', study:'MSc Metropolitan Analysis, Design & Engineering', university:'AMS Institute / Wageningen University & Research', changemaker:'', photo:'' },
+            { name:'Ruthler Louis', study:'Software Engineering', university:'CODAM', changemaker:'', photo:'' },
+            { name:'Frederico Campanello', study:'Double Bass Master', university:'Conservatorium van Amsterdam (AHK)', changemaker:'', photo:'' }
           ]}
         ]
       },
@@ -432,16 +444,16 @@
         cohorts:[
           { start:2024, end:2025, count:2, scholars:[] },
           { start:2025, end:2026, count:10, scholars:[
-            { name:'Eiman Elgaali', study:'MA Public Health and Health Equity', university:'KIT Royal Tropical Institute', photo:'' },
-            { name:'Phan Minh Thai', study:'MA Public Health and Health Equity', university:'KIT Royal Tropical Institute', photo:'' },
-            { name:'Nataliia Sulym', study:'MA Music', university:'Conservatorium van Amsterdam (AHK)', photo:'' },
-            { name:'Kirutharshan Nicholas John Mariyathas', study:'MA Theatre Makers and Curators in the Performing Arts', university:'Amsterdam University of the Arts (AHK)', photo:'' },
-            { name:'El Mehdi Banacer', study:'MArch Architecture', university:'Amsterdam University of the Arts (AHK)', photo:'' },
-            { name:'Shuang Yu', study:'MA Film', university:'Amsterdam University of the Arts (AHK)', photo:'' },
-            { name:'Aditya Jain', study:'MA Applied Museum and Heritage Studies', university:'Amsterdam University of the Arts (AHK)', photo:'' },
-            { name:'Itan Nikelskii', study:'–', university:'CODAM', photo:'' },
-            { name:'Antonio Cossari', study:'BA Software Engineering', university:'CODAM', photo:'' },
-            { name:'Julian Zienert', study:'Core programme', university:'CODAM', photo:'' }
+            { name:'Eiman Elgaali', study:'MA Public Health and Health Equity', university:'KIT Royal Tropical Institute', changemaker:'', photo:'' },
+            { name:'Phan Minh Thai', study:'MA Public Health and Health Equity', university:'KIT Royal Tropical Institute', changemaker:'', photo:'' },
+            { name:'Nataliia Sulym', study:'MA Music', university:'Conservatorium van Amsterdam (AHK)', changemaker:'', photo:'' },
+            { name:'Kirutharshan Nicholas John Mariyathas', study:'MA Theatre Makers and Curators in the Performing Arts', university:'Amsterdam University of the Arts (AHK)', changemaker:'', photo:'' },
+            { name:'El Mehdi Banacer', study:'MArch Architecture', university:'Amsterdam University of the Arts (AHK)', changemaker:'', photo:'' },
+            { name:'Shuang Yu', study:'MA Film', university:'Amsterdam University of the Arts (AHK)', changemaker:'', photo:'' },
+            { name:'Aditya Jain', study:'MA Applied Museum and Heritage Studies', university:'Amsterdam University of the Arts (AHK)', changemaker:'', photo:'' },
+            { name:'Itan Nikelskii', study:'–', university:'CODAM', changemaker:'', photo:'' },
+            { name:'Antonio Cossari', study:'BA Software Engineering', university:'CODAM', changemaker:'', photo:'' },
+            { name:'Julian Zienert', study:'Core programme', university:'CODAM', changemaker:'', photo:'' }
           ]}
         ]
       },
@@ -450,14 +462,14 @@
         cohorts:[
           { start:2024, end:2025, count:9, scholars:[] },
           { start:2025, end:2026, count:8, scholars:[
-            { name:'Georgios Chomatas', study:'MA Applied History', university:'Erasmus University Rotterdam', photo:'' },
-            { name:'Simon Playe', study:'MA', university:'Erasmus University Rotterdam', photo:'' },
-            { name:'Samuele Pollichemi', study:'MSc Strategic Management', university:'Erasmus University Rotterdam', photo:'' },
-            { name:'Giulia di Santo-Portelli', study:'MA Societal Transitions', university:'Erasmus University Rotterdam', photo:'' },
-            { name:'Pavlos Palvou', study:'MSc Finance and Investments', university:'Erasmus University Rotterdam', photo:'' },
-            { name:'Hien Luong Lai', study:'MSc', university:'Erasmus University Rotterdam', photo:'' },
-            { name:'Lauren Zableckis', study:'MSc Genomics in Society', university:'Erasmus University Rotterdam', photo:'' },
-            { name:'Negul Devan Kesadev Rajeswari', study:'MSc Urban Management and Development', university:'IHS – Institute for Housing and Urban Development Studies', photo:'' }
+            { name:'Georgios Chomatas', study:'MA Applied History', university:'Erasmus University Rotterdam', changemaker:'', photo:'' },
+            { name:'Simon Playe', study:'MA', university:'Erasmus University Rotterdam', changemaker:'', photo:'' },
+            { name:'Samuele Pollichemi', study:'MSc Strategic Management', university:'Erasmus University Rotterdam', changemaker:'', photo:'' },
+            { name:'Giulia di Santo-Portelli', study:'MA Societal Transitions', university:'Erasmus University Rotterdam', changemaker:'', photo:'' },
+            { name:'Pavlos Palvou', study:'MSc Finance and Investments', university:'Erasmus University Rotterdam', changemaker:'', photo:'' },
+            { name:'Hien Luong Lai', study:'MSc', university:'Erasmus University Rotterdam', changemaker:'', photo:'' },
+            { name:'Lauren Zableckis', study:'MSc Genomics in Society', university:'Erasmus University Rotterdam', changemaker:'', photo:'' },
+            { name:'Negul Devan Kesadev Rajeswari', study:'MSc Urban Management and Development', university:'IHS – Institute for Housing and Urban Development Studies', changemaker:'', photo:'' }
           ]}
         ]
       },
@@ -465,9 +477,9 @@
         city:'Delft', country:'Netherlands', lat:51.9995, lng:4.3627,
         cohorts:[
           { start:2025, end:2026, count:3, scholars:[
-            { name:'Milagro Vasquez', study:'MSc Water and Sustainable Development', university:'IHE Delft', photo:'' },
-            { name:'Esraa Omer Mukhtar', study:'MSc Water and Sustainable Development', university:'IHE Delft', photo:'' },
-            { name:'Musulene Sharpolu', study:'MSc Water and Sustainable Development', university:'IHE Delft', photo:'' }
+            { name:'Milagro Vasquez', study:'MSc Water and Sustainable Development', university:'IHE Delft', changemaker:'', photo:'' },
+            { name:'Esraa Omer Mukhtar', study:'MSc Water and Sustainable Development', university:'IHE Delft', changemaker:'', photo:'' },
+            { name:'Musulene Sharpolu', study:'MSc Water and Sustainable Development', university:'IHE Delft', changemaker:'', photo:'' }
           ]}
         ]
       },
@@ -475,8 +487,8 @@
         city:'Eindhoven', country:'Netherlands', lat:51.4416, lng:5.4697,
         cohorts:[
           { start:2025, end:2026, count:2, scholars:[
-            { name:'Jiwon Hyun', study:'MA Societal Design', university:'Design Academy Eindhoven', photo:'' },
-            { name:'Jaeyoung Lee', study:'MA Contextual Design', university:'Design Academy Eindhoven', photo:'' }
+            { name:'Jiwon Hyun', study:'MA Societal Design', university:'Design Academy Eindhoven', changemaker:'', photo:'' },
+            { name:'Jaeyoung Lee', study:'MA Contextual Design', university:'Design Academy Eindhoven', changemaker:'', photo:'' }
           ]}
         ]
       },
@@ -485,12 +497,12 @@
         cohorts:[
           { start:2024, end:2025, count:2, scholars:[] },
           { start:2025, end:2026, count:6, scholars:[
-            { name:'Udey Dahir', study:'MSc Crisis and Security Management', university:'Leiden University – The Hague', photo:'' },
-            { name:'Pragya Misra', study:'MA Development Studies', university:'ISS – Erasmus University Rotterdam (The Hague)', photo:'' },
-            { name:'Gillian Kipkemboi', study:'MA Development Studies', university:'ISS – Erasmus University Rotterdam (The Hague)', photo:'' },
-            { name:'Miyu Nohashi', study:'MA Music Performance in Early Music', university:'Royal Conservatoire The Hague', photo:'' },
-            { name:'Leslie Perez-Canto Azaf', study:'National Master in Orchestral Conducting', university:'Royal Conservatoire The Hague', photo:'' },
-            { name:'Zakaria Haij', study:'MSc Environmental Engineering', university:'TU Delft', photo:'' }
+            { name:'Udey Dahir', study:'MSc Crisis and Security Management', university:'Leiden University – The Hague', changemaker:'', photo:'' },
+            { name:'Pragya Misra', study:'MA Development Studies', university:'ISS – Erasmus University Rotterdam (The Hague)', changemaker:'', photo:'' },
+            { name:'Gillian Kipkemboi', study:'MA Development Studies', university:'ISS – Erasmus University Rotterdam (The Hague)', changemaker:'', photo:'' },
+            { name:'Miyu Nohashi', study:'MA Music Performance in Early Music', university:'Royal Conservatoire The Hague', changemaker:'', photo:'' },
+            { name:'Leslie Perez-Canto Azaf', study:'National Master in Orchestral Conducting', university:'Royal Conservatoire The Hague', changemaker:'', photo:'' },
+            { name:'Zakaria Haij', study:'MSc Environmental Engineering', university:'TU Delft', changemaker:'', photo:'' }
           ]}
         ]
       },
@@ -499,11 +511,11 @@
         cohorts:[
           { start:2024, end:2025, count:4, scholars:[] },
           { start:2025, end:2026, count:5, scholars:[
-            { name:'Emma Przygodda', study:'European Studies on Society, Science and Technology', university:'Maastricht University', photo:'' },
-            { name:'Lea Rebekka Wegert', study:'MSc Cultures of Arts, Science and Technology', university:'Maastricht University', photo:'' },
-            { name:'Nikita Chepkeyvch', study:'MSc Economics and Strategy in Emerging Markets', university:'Maastricht University', photo:'' },
-            { name:'Burak Nuri Demirci', study:'MSc Psychology: Work & Organizational Psychology', university:'Maastricht University', photo:'' },
-            { name:'Doljinsuren Tumurbaatar', study:'MSc Public Policy and Human Development', university:'Maastricht University', photo:'' }
+            { name:'Emma Przygodda', study:'European Studies on Society, Science and Technology', university:'Maastricht University', changemaker:'', photo:'' },
+            { name:'Lea Rebekka Wegert', study:'MSc Cultures of Arts, Science and Technology', university:'Maastricht University', changemaker:'', photo:'' },
+            { name:'Nikita Chepkeyvch', study:'MSc Economics and Strategy in Emerging Markets', university:'Maastricht University', changemaker:'', photo:'' },
+            { name:'Burak Nuri Demirci', study:'MSc Psychology: Work & Organizational Psychology', university:'Maastricht University', changemaker:'', photo:'' },
+            { name:'Doljinsuren Tumurbaatar', study:'MSc Public Policy and Human Development', university:'Maastricht University', changemaker:'', photo:'' }
           ]}
         ]
       },
@@ -514,7 +526,7 @@
         cohorts:[
           { start:2024, end:2025, count:3, scholars:[] },
           { start:2025, end:2026, count:1, scholars:[
-            { name:'Mamadou Aliou Diallo', study:'MA Économie Appliquée', university:'Toulouse School of Economics', photo:'' }
+            { name:'Mamadou Aliou Diallo', study:'MA Économie Appliquée', university:'Toulouse School of Economics', changemaker:'', photo:'' }
           ]}
         ]
       },
@@ -525,13 +537,13 @@
         cohorts:[
           { start:2024, end:2025, count:2, scholars:[] },
           { start:2025, end:2026, count:7, scholars:[
-            { name:'Aimen Lakroum', study:'BA English and French Studies', university:'Universitat Autònoma de Barcelona (UAB)', photo:'' },
-            { name:'Muhammad Usman', study:'MA Telecommunication Engineering', university:'Universitat Autònoma de Barcelona (UAB)', photo:'' },
-            { name:'Malik Abdalaal', study:'MSc Research and Innovation in Computer-based Science and Engineering', university:'Universitat Autònoma de Barcelona (UAB)', photo:'' },
-            { name:'Jesuferanmi Bankole', study:'MBA', university:'ESADE', photo:'' },
-            { name:'Aswini Kumar', study:'MSc International Management', university:'ESADE', photo:'' },
-            { name:'Idris Mohammad', study:'MSc International Management', university:'ESADE', photo:'' },
-            { name:'Chelsea Sabine Sangwa', study:'International Master in Sustainable Business and Innovation', university:'EADA Business School', photo:'' }
+            { name:'Aimen Lakroum', study:'BA English and French Studies', university:'Universitat Autònoma de Barcelona (UAB)', changemaker:'', photo:'' },
+            { name:'Muhammad Usman', study:'MA Telecommunication Engineering', university:'Universitat Autònoma de Barcelona (UAB)', changemaker:'', photo:'' },
+            { name:'Malik Abdalaal', study:'MSc Research and Innovation in Computer-based Science and Engineering', university:'Universitat Autònoma de Barcelona (UAB)', changemaker:'', photo:'' },
+            { name:'Jesuferanmi Bankole', study:'MBA', university:'ESADE', changemaker:'', photo:'' },
+            { name:'Aswini Kumar', study:'MSc International Management', university:'ESADE', changemaker:'', photo:'' },
+            { name:'Idris Mohammad', study:'MSc International Management', university:'ESADE', changemaker:'', photo:'' },
+            { name:'Chelsea Sabine Sangwa', study:'International Master in Sustainable Business and Innovation', university:'EADA Business School', changemaker:'', photo:'' }
           ]}
         ]
       },
@@ -540,12 +552,12 @@
         cohorts:[
           { start:2024, end:2025, count:4, scholars:[] },
           { start:2025, end:2026, count:6, scholars:[
-            { name:'Iasmina Sharapova', study:'MA Management', university:'IE University', photo:'' },
-            { name:'Shayna van Vuren', study:'MSc Sustainability and Business Transformation', university:'IE University', photo:'' },
-            { name:'Juan Pablo Hernández Mejía', study:'MA Cultural Project Management', university:'La Fábrica', photo:'' },
-            { name:'Juan Glassford', study:'MA Photographic Projects', university:'La Fábrica', photo:'' },
-            { name:'Azti Correa Alamimos', study:'MA Cultural Project Management', university:'La Fábrica', photo:'' },
-            { name:'Paula Thomas', study:'MA Photographic Projects', university:'La Fábrica', photo:'' }
+            { name:'Iasmina Sharapova', study:'MA Management', university:'IE University', changemaker:'', photo:'' },
+            { name:'Shayna van Vuren', study:'MSc Sustainability and Business Transformation', university:'IE University', changemaker:'', photo:'' },
+            { name:'Juan Pablo Hernández Mejía', study:'MA Cultural Project Management', university:'La Fábrica', changemaker:'', photo:'' },
+            { name:'Juan Glassford', study:'MA Photographic Projects', university:'La Fábrica', changemaker:'', photo:'' },
+            { name:'Azti Correa Alamimos', study:'MA Cultural Project Management', university:'La Fábrica', changemaker:'', photo:'' },
+            { name:'Paula Thomas', study:'MA Photographic Projects', university:'La Fábrica', changemaker:'', photo:'' }
           ]}
         ]
       },
@@ -553,8 +565,8 @@
         city:'San Sebastian', country:'Spain', lat:43.3183, lng:-1.9812,
         cohorts:[
           { start:2025, end:2026, count:2, scholars:[
-            { name:'Frank David Guerra Blanco', study:'MA Cinematographic and Audiovisual Creation', university:'Zine-Eskola', photo:'' },
-            { name:'Noemi Susel Veláquez Legón', study:'MA Film and Audiovisual Archives', university:'Zine-Eskola', photo:'' }
+            { name:'Frank David Guerra Blanco', study:'MA Cinematographic and Audiovisual Creation', university:'Zine-Eskola', changemaker:'', photo:'' },
+            { name:'Noemi Susel Veláquez Legón', study:'MA Film and Audiovisual Archives', university:'Zine-Eskola', changemaker:'', photo:'' }
           ]}
         ]
       },
@@ -564,12 +576,12 @@
         city:'Berlin', country:'Germany', lat:52.52, lng:13.405,
         cohorts:[
           { start:2025, end:2026, count:6, scholars:[
-            { name:'Matej Balint', study:'BSc Data Science and Business Analytics', university:'Forward College', photo:'' },
-            { name:'Azra Zukic', study:'MA International Affairs', university:'Hertie School', photo:'' },
-            { name:'Daniel Sidiqie', study:'MA International Affairs', university:'Hertie School', photo:'' },
-            { name:'Beatriz Patrico Pereira da Cruz', study:'MA Public Administration', university:'Hertie School', photo:'' },
-            { name:'Salma Karen Gomez Lopez', study:'MSc Public Policy', university:'Hertie School', photo:'' },
-            { name:'Vikash Kanna Chandra Prasad Megalai', study:'Sustainable Mobility Management', university:'TU Berlin', photo:'' }
+            { name:'Matej Balint', study:'BSc Data Science and Business Analytics', university:'Forward College', changemaker:'', photo:'' },
+            { name:'Azra Zukic', study:'MA International Affairs', university:'Hertie School', changemaker:'', photo:'' },
+            { name:'Daniel Sidiqie', study:'MA International Affairs', university:'Hertie School', changemaker:'', photo:'' },
+            { name:'Beatriz Patrico Pereira da Cruz', study:'MA Public Administration', university:'Hertie School', changemaker:'', photo:'' },
+            { name:'Salma Karen Gomez Lopez', study:'MSc Public Policy', university:'Hertie School', changemaker:'', photo:'' },
+            { name:'Vikash Kanna Chandra Prasad Megalai', study:'Sustainable Mobility Management', university:'TU Berlin', changemaker:'', photo:'' }
           ]}
         ]
       },
@@ -580,14 +592,14 @@
         cohorts:[
           { start:2024, end:2025, count:2, scholars:[] },
           { start:2025, end:2026, count:8, scholars:[
-            { name:'Joanna Shulha', study:'MA Illustration', university:'Glasgow School of Art', photo:'' },
-            { name:'Keely McLavin', study:'MLitt Curation', university:'Glasgow School of Art', photo:'' },
-            { name:'Riccardo Atanasio', study:'MA Musical Theatre (Musical Directing)', university:'Royal Conservatoire of Scotland', photo:'' },
-            { name:'Artem Tereshchenko', study:'MA Piano Performance', university:'Royal Conservatoire of Scotland', photo:'' },
-            { name:'Jonathan Allen', study:'BEng (Hons) Aero-Mechanical Engineering', university:'University of Strathclyde', photo:'' },
-            { name:'Dillon Bricknal', study:'MSc Forensic Science', university:'University of Strathclyde', photo:'' },
-            { name:'Mfon-Abasi Michael Inyang', study:'MA TV Fiction Writing', university:'Glasgow Caledonian University', photo:'' },
-            { name:'Caleb Chezhian', study:'MSc Investigative Ophthalmology and Vision Science', university:'Glasgow Caledonian University', photo:'' }
+            { name:'Joanna Shulha', study:'MA Illustration', university:'Glasgow School of Art', changemaker:'', photo:'' },
+            { name:'Keely McLavin', study:'MLitt Curation', university:'Glasgow School of Art', changemaker:'', photo:'' },
+            { name:'Riccardo Atanasio', study:'MA Musical Theatre (Musical Directing)', university:'Royal Conservatoire of Scotland', changemaker:'', photo:'' },
+            { name:'Artem Tereshchenko', study:'MA Piano Performance', university:'Royal Conservatoire of Scotland', changemaker:'', photo:'' },
+            { name:'Jonathan Allen', study:'BEng (Hons) Aero-Mechanical Engineering', university:'University of Strathclyde', changemaker:'', photo:'' },
+            { name:'Dillon Bricknal', study:'MSc Forensic Science', university:'University of Strathclyde', changemaker:'', photo:'' },
+            { name:'Mfon-Abasi Michael Inyang', study:'MA TV Fiction Writing', university:'Glasgow Caledonian University', changemaker:'', photo:'' },
+            { name:'Caleb Chezhian', study:'MSc Investigative Ophthalmology and Vision Science', university:'Glasgow Caledonian University', changemaker:'', photo:'' }
           ]}
         ]
       },
@@ -598,16 +610,16 @@
         cohorts:[
           { start:2024, end:2025, count:5, scholars:[] },
           { start:2025, end:2026, count:10, scholars:[
-            { name:'Shreya Parajuli', study:'LLM Human Rights Law', university:'Central European University (CEU)', photo:'' },
-            { name:'Alina Zaripova', study:'MA History', university:'Central European University (CEU)', photo:'' },
-            { name:'Danya Aburoumi', study:'MA Human Rights', university:'Central European University (CEU)', photo:'' },
-            { name:'Syuzanna Poghosyan', study:'MA Economics, Data and Policy', university:'Central European University (CEU)', photo:'' },
-            { name:'Anna Andreasyan', study:'MA Sociology and Social Anthropology', university:'Central European University (CEU)', photo:'' },
-            { name:'Asliya Shodghulomova', study:'MSc Environmental Sciences and Policy', university:'Central European University (CEU)', photo:'' },
-            { name:'Ali Usama', study:'MSc Social Data Science', university:'Central European University (CEU)', photo:'' },
-            { name:'Jiayu Li', study:'MA (Music)', university:'University of Music and Performing Arts Vienna (MDW)', photo:'' },
-            { name:'Mathapelo Matabane', study:'MA (Music)', university:'University of Music and Performing Arts Vienna (MDW)', photo:'' },
-            { name:'Célest Lang', study:'MA of Music – Piano', university:'University of Music and Performing Arts Vienna (MDW)', photo:'' }
+            { name:'Shreya Parajuli', study:'LLM Human Rights Law', university:'Central European University (CEU)', changemaker:'', photo:'' },
+            { name:'Alina Zaripova', study:'MA History', university:'Central European University (CEU)', changemaker:'', photo:'' },
+            { name:'Danya Aburoumi', study:'MA Human Rights', university:'Central European University (CEU)', changemaker:'', photo:'' },
+            { name:'Syuzanna Poghosyan', study:'MA Economics, Data and Policy', university:'Central European University (CEU)', changemaker:'', photo:'' },
+            { name:'Anna Andreasyan', study:'MA Sociology and Social Anthropology', university:'Central European University (CEU)', changemaker:'', photo:'' },
+            { name:'Asliya Shodghulomova', study:'MSc Environmental Sciences and Policy', university:'Central European University (CEU)', changemaker:'', photo:'' },
+            { name:'Ali Usama', study:'MSc Social Data Science', university:'Central European University (CEU)', changemaker:'', photo:'' },
+            { name:'Jiayu Li', study:'MA (Music)', university:'University of Music and Performing Arts Vienna (MDW)', changemaker:'', photo:'' },
+            { name:'Mathapelo Matabane', study:'MA (Music)', university:'University of Music and Performing Arts Vienna (MDW)', changemaker:'', photo:'' },
+            { name:'Célest Lang', study:'MA of Music – Piano', university:'University of Music and Performing Arts Vienna (MDW)', changemaker:'', photo:'' }
           ]}
         ]
       },
@@ -617,21 +629,21 @@
         city:'Porto', country:'Portugal', lat:41.1579, lng:-8.6291,
         cohorts:[
           { start:2025, end:2026, count:9, scholars:[
-            { name:'Lucy Nyoni', study:'International MBA', university:'Porto Business School', photo:'' },
-            { name:'Omid Akabrian', study:'MSc Business Administration (MBA)', university:'Porto Business School', photo:'' },
-            { name:'Cláudio Manuel António', study:'MA Auditing and Taxation', university:'Universidade Católica Portuguesa – Porto', photo:'' },
-            { name:'Sila Köse', study:'MA Cinema', university:'Universidade Católica Portuguesa – Porto', photo:'' },
-            { name:'Carla Nicole Dominquez Lora', study:'MA Creative Industries Management', university:'Universidade Católica Portuguesa – Porto', photo:'' },
-            { name:'Doris Dadzie', study:'MA Management', university:'Universidade Católica Portuguesa – Porto', photo:'' },
-            { name:'Chukwunwike Humphrey Enelamah', study:'MA Management', university:'Universidade Católica Portuguesa – Porto', photo:'' },
-            { name:'Naman Tariq', study:'MA Law International Studies', university:'Universidade Católica Portuguesa – Porto', photo:'' },
-            { name:'Ana Beatriz Martins Pereira', study:'Integrated MSc in Medicine', university:'Universidade do Porto', photo:'' }
+            { name:'Lucy Nyoni', study:'International MBA', university:'Porto Business School', changemaker:'', photo:'' },
+            { name:'Omid Akabrian', study:'MSc Business Administration (MBA)', university:'Porto Business School', changemaker:'', photo:'' },
+            { name:'Cláudio Manuel António', study:'MA Auditing and Taxation', university:'Universidade Católica Portuguesa – Porto', changemaker:'', photo:'' },
+            { name:'Sila Köse', study:'MA Cinema', university:'Universidade Católica Portuguesa – Porto', changemaker:'', photo:'' },
+            { name:'Carla Nicole Dominquez Lora', study:'MA Creative Industries Management', university:'Universidade Católica Portuguesa – Porto', changemaker:'', photo:'' },
+            { name:'Doris Dadzie', study:'MA Management', university:'Universidade Católica Portuguesa – Porto', changemaker:'', photo:'' },
+            { name:'Chukwunwike Humphrey Enelamah', study:'MA Management', university:'Universidade Católica Portuguesa – Porto', changemaker:'', photo:'' },
+            { name:'Naman Tariq', study:'MA Law International Studies', university:'Universidade Católica Portuguesa – Porto', changemaker:'', photo:'' },
+            { name:'Ana Beatriz Martins Pereira', study:'Integrated MSc in Medicine', university:'Universidade do Porto', changemaker:'', photo:'' }
           ]}
         ]
       }
     ];
 
-    // === State + DOM refs ===
+    // === State + DOM ===
     let yearMax = 2026;
     const els = {
       statCities: document.getElementById('stat-cities'),
@@ -724,24 +736,18 @@
       els.statTotal.textContent = totalScholars;
     }
 
-    // Slider + reset
-    els.yearMax.addEventListener('input', e => {
-      yearMax = +e.target.value;
-      els.yearLabel.textContent = yearMax;
-      buildMarkers();
-    });
-
-    els.resetView.addEventListener('click', () => map.setView([51.5, 9], 5));
-
-    // === Modal logic ===
+    // Render scholar cards in modal
     function renderScholars(list) {
       els.scholarsContainer.innerHTML = list.map(s => `
         <div class="scholar-card">
-          ${s.photo ? `<img src="${s.photo}" alt="${s.name || 'Scholar'}" loading="lazy" onerror="this.style.display='none'" />` : `<img src="" alt="" style="display:none" />`}
+          ${s.photo
+            ? `<img src="${s.photo}" alt="${s.name || 'Scholar'}" loading="lazy" onerror="this.style.display='none'" />`
+            : `<img src="" alt="" style="display:none" />`}
           <div class="scholar-meta">
             <div class="scholar-name">${s.name || 'Unnamed scholar'}</div>
             ${s.university ? `<div class="scholar-uni">${s.university}</div>` : ''}
             ${s.study ? `<div class="scholar-study">${s.study}</div>` : ''}
+            ${s.changemaker ? `<div class="scholar-idea">${s.changemaker}</div>` : ''}
             <div class="scholar-tags">
               ${s.cohort ? `<span class="tag">${s.cohort}</span>` : ''}
             </div>
@@ -765,7 +771,7 @@
       els.scholarSearch.oninput = () => {
         const q = (els.scholarSearch.value || '').toLowerCase();
         const filtered = base.filter(s =>
-          (`${s.name || ''} ${s.study || ''} ${s.university || ''}`.toLowerCase().includes(q))
+          (`${s.name || ''} ${s.study || ''} ${s.university || ''} ${s.changemaker || ''}`.toLowerCase().includes(q))
         );
         renderScholars(filtered);
       };
@@ -778,6 +784,14 @@
     }
 
     window.__openScholars = openScholars;
+
+    els.yearMax.addEventListener('input', e => {
+      yearMax = +e.target.value;
+      els.yearLabel.textContent = yearMax;
+      buildMarkers();
+    });
+
+    els.resetView.addEventListener('click', () => map.setView([51.5, 9], 5));
     els.closeModal.addEventListener('click', closeModal);
     document.getElementById('scholar-modal').addEventListener('click', e => {
       if (e.target.id === 'scholar-modal') closeModal();
